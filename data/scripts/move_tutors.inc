@@ -298,3 +298,13 @@ MoveTutor_EventScript_OpenPartyMenu:: @ 82C8326
 MoveTutor_EventScript_CanOnlyBeLearnedOnce:: @ 82C832D
 	msgbox MoveTutor_Text_ThisMoveCanOnlyBeLearnedOnce, MSGBOX_YESNO
 	return
+
+@ NOVOS SCRIPTS
+VerdanturfTown_EventScript_Rockclimb_tutor::
+	lock
+	faceplayer
+	msgbox MoveTutor_Text_RockClimb_Tutor, MSGBOX_DEFAULT
+	setvar VAR_0x8005, TUTOR_MOVE_ROCK_CLIMB
+	call MoveTutor_EventScript_OpenPartyMenu
+	release
+	end

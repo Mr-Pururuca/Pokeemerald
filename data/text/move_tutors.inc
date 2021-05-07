@@ -235,3 +235,6 @@ MoveTutor_Text_ExplosionTaught: @ 82C7E7A
 	.string "to ignite my own EXPLOSION…\p"
 	.string "Maybe it's because deep down,\n"
 	.string "I would rather stay here…$"
+
+MoveTutor_Text_RockClimb_Tutor:
+	.string "Vou te encinar como escala montanha!$"
