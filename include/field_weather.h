@@ -119,15 +119,6 @@ extern struct Weather gWeather;
 extern struct Weather *const gWeatherPtr;
 extern const u16 gFogPalette[];
 
-enum
-{
-    GAMMA_NONE,
-    GAMMA_NORMAL,
-    GAMMA_ALT,
-};
-
-void UpdatePaletteGammaType(u8 index, u8 gammaType);
-
 // field_weather_effect.c
 extern const u8 gWeatherFogHorizontalTiles[];
 
@@ -142,7 +133,7 @@ bool8 IsWeatherNotFadingIn(void);
 void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex);
 void ApplyWeatherGammaShiftToPal(u8 paletteIndex);
 u8 sub_80ABF20(void);
-void LoadCustomWeatherSpritePalette(const struct SpritePalette *palette);
+void LoadCustomWeatherSpritePalette(const u16 *palette);
 void ResetDroughtWeatherPaletteLoading(void);
 bool8 LoadDroughtWeatherPalettes(void);
 void sub_80ABFE0(s8 gammaIndex);
