@@ -1311,7 +1311,7 @@
 	various \battler, 15
 	.endm
 	
-	.macro arenajudgmentstring id:req
+	.macro arenajudmengtstring id:req
 	various \id, VARIOUS_ARENA_JUDGMENT_STRING
 	.endm
 	

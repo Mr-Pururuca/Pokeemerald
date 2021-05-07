@@ -38,7 +38,6 @@
 #include "constants/contest.h"
 #include "constants/items.h"
 #include "constants/layouts.h"
-#include "constants/lilycove_lady.h"
 #include "constants/maps.h"
 #include "constants/metatile_behaviors.h"
 #include "constants/moves.h"
@@ -180,7 +179,7 @@ static void DoTVShowPokemonNewsBattleFrontier(void);
 static void DoTVShowWhatsNo1InHoennToday(void);
 static void DoTVShowSecretBaseSecrets(void);
 static void DoTVShowSafariFanClub(void);
-static void DoTVShowLilycoveContestLady(void);
+static void DoTVShowPokemonContestLiveUpdates2(void);
 
 // .rodata
 
@@ -462,11 +461,11 @@ static const u8 *const sTVNameRaterTextGroup[] = {
     gTVNameRaterText18
 };
 
-static const u8 *const sTVLilycoveContestLadyTextGroup[] = {
-    [CONTESTLADYLIVE_STATE_INTRO]      = ContestLadyShow_Text_Intro,
-    [CONTESTLADYLIVE_STATE_WON]        = ContestLadyShow_Text_Won,
-    [CONTESTLADYLIVE_STATE_LOST]       = ContestLadyShow_Text_Lost,
-    [CONTESTLADYLIVE_STATE_LOST_BADLY] = ContestLadyShow_Text_LostBadly
+static const u8 *const sTVPokemonContestLiveUpdates2TextGroup[] = {
+    gTVPokemonContestLiveUpdates2Text00,
+    gTVPokemonContestLiveUpdates2Text01,
+    gTVPokemonContestLiveUpdates2Text02,
+    gTVPokemonContestLiveUpdates2Text03
 };
 
 static const u8 *const sTVPokemonTodayFailedTextGroup[] = {
@@ -1662,13 +1661,13 @@ void PutLilycoveContestLadyShowOnTheAir(void)
     if (gSpecialVar_Result != TRUE)
     {
         show = &gSaveBlock1Ptr->tvShows[sCurTVShowSlot];
-        BufferContestLadyLanguage(&show->contestLady.language);
-        show->contestLady.pokemonNameLanguage = GAME_LANGUAGE;
-        show->contestLady.kind = TVSHOW_LILYCOVE_CONTEST_LADY;
-        show->contestLady.active = TRUE;
-        BufferContestLadyPlayerName(show->contestLady.playerName);
-        BufferContestLadyMonName(&show->contestLady.contestCategory, show->contestLady.nickname);
-        show->contestLady.pokeblockState = GetContestLadyPokeblockState();
+        BufferContestLadyLanguage(&show->contestLiveUpdates2.language);
+        show->contestLiveUpdates2.pokemonNameLanguage = GAME_LANGUAGE;
+        show->contestLiveUpdates2.kind = TVSHOW_CONTEST_LIVE_UPDATES_2;
+        show->contestLiveUpdates2.active = TRUE;
+        BufferContestLadyPlayerName(show->contestLiveUpdates2.playerName);
+        BufferContestLadyMonName(&show->contestLiveUpdates2.contestCategory, show->contestLiveUpdates2.nickname);
+        show->contestLiveUpdates2.pokeblockState = sub_818E880();
         tv_store_id_2x(show);
     }
 }
@@ -3813,8 +3812,9 @@ static void sub_80F0708(void) // FIXME: register allocation shenanigans
                 break;
             case TVSHOW_FAN_CLUB_SPECIAL:
                 break;
-            case TVSHOW_LILYCOVE_CONTEST_LADY:
+            case TVSHOW_CONTEST_LIVE_UPDATES_2:
                 break;
+
             case TVSHOW_OFF_AIR:
                 break;
             case TVSHOW_FAN_CLUB_LETTER:
@@ -4308,10 +4308,11 @@ static void sub_80F12A4(TVShow *shows)
                 curShow->fanClubSpecial.language = TV_GetStringLanguage(curShow->fanClubSpecial.playerName);
                 curShow->fanClubSpecial.idolNameLanguage = TV_GetStringLanguage(curShow->fanClubSpecial.idolName);
                 break;
-            case TVSHOW_LILYCOVE_CONTEST_LADY:
-                curShow->contestLady.language = TV_GetStringLanguage(curShow->contestLady.playerName);
-                curShow->contestLady.pokemonNameLanguage = TV_GetStringLanguage(curShow->contestLady.nickname);
+            case TVSHOW_CONTEST_LIVE_UPDATES_2:
+                curShow->contestLiveUpdates2.language = TV_GetStringLanguage(curShow->contestLiveUpdates2.playerName);
+                curShow->contestLiveUpdates2.pokemonNameLanguage = TV_GetStringLanguage(curShow->contestLiveUpdates2.nickname);
                 break;
+
             case TVSHOW_POKEMON_TODAY_CAUGHT:
                 curShow->pokemonToday.language = TV_GetStringLanguage(curShow->pokemonToday.playerName);
                 curShow->pokemonToday.language2 = TV_GetStringLanguage(curShow->pokemonToday.nickname);
@@ -4491,8 +4492,8 @@ void DoTVShow(void)
             case TVSHOW_SAFARI_FAN_CLUB:
                 DoTVShowSafariFanClub();
                 break;
-            case TVSHOW_LILYCOVE_CONTEST_LADY:
-                DoTVShowLilycoveContestLady();
+            case TVSHOW_CONTEST_LIVE_UPDATES_2:
+                DoTVShowPokemonContestLiveUpdates2();
                 break;
         }
     }
@@ -7173,8 +7174,7 @@ static void DoTVShowSafariFanClub(void)
     ShowFieldMessage(sTVSafariFanClubTextGroup[state]);
 }
 
-// This show is a version of Contest Live Updates for the Lilycove Contest Lady
-static void DoTVShowLilycoveContestLady(void)
+static void DoTVShowPokemonContestLiveUpdates2(void)
 {
     TVShow *show;
     u8 state;
@@ -7184,30 +7184,30 @@ static void DoTVShowLilycoveContestLady(void)
     state = sTVShowState;
     switch (state)
     {
-    case CONTESTLADYLIVE_STATE_INTRO:
-        BufferContestName(gStringVar1, show->contestLady.contestCategory);
-        if (show->contestLady.pokeblockState == CONTEST_LADY_GOOD)
-        {
-            sTVShowState = CONTESTLADYLIVE_STATE_WON;
-        }
-        else if (show->contestLady.pokeblockState == CONTEST_LADY_NORMAL)
-        {
-            sTVShowState = CONTESTLADYLIVE_STATE_LOST;
-        }
-        else // CONTEST_LADY_BAD
-        {
-            sTVShowState = CONTESTLADYLIVE_STATE_LOST_BADLY;
-        }
-        break;
-    case CONTESTLADYLIVE_STATE_WON:
-    case CONTESTLADYLIVE_STATE_LOST:
-        TVShowConvertInternationalString(gStringVar3, show->contestLady.playerName, show->contestLady.language);
-    case CONTESTLADYLIVE_STATE_LOST_BADLY:
-        TVShowConvertInternationalString(gStringVar2, show->contestLady.nickname, show->contestLady.pokemonNameLanguage);
-        TVShowDone();
-        break;
+        case 0:
+            BufferContestName(gStringVar1, show->contestLiveUpdates2.contestCategory);
+            if (show->contestLiveUpdates2.pokeblockState == 1)
+            {
+                sTVShowState = 1;
+            }
+            else if (show->contestLiveUpdates2.pokeblockState == 0)
+            {
+                sTVShowState = 2;
+            }
+            else
+            {
+                sTVShowState = 3;
+            }
+            break;
+        case 1:
+        case 2:
+            TVShowConvertInternationalString(gStringVar3, show->contestLiveUpdates2.playerName, show->contestLiveUpdates2.language);
+        case 3:
+            TVShowConvertInternationalString(gStringVar2, show->contestLiveUpdates2.nickname, show->contestLiveUpdates2.pokemonNameLanguage);
+            TVShowDone();
+            break;
     }
-    ShowFieldMessage(sTVLilycoveContestLadyTextGroup[state]);
+    ShowFieldMessage(sTVPokemonContestLiveUpdates2TextGroup[state]);
 }
 
 void TVShowDone(void)

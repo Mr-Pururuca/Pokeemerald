@@ -363,7 +363,7 @@ static void Task_RecordMixing_Main(u8 taskId)
         {
             free(sReceivedRecords);
             free(sSentRecord);
-            SetLinkWaitingForScript();
+            sub_808729C();
             if (gWirelessCommType != 0)
             {
                 CreateTask(Task_ReturnToFieldRecordMixing, 10);
